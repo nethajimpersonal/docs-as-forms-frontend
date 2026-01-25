@@ -1,0 +1,215 @@
+/* =========================
+   Base Reset
+========================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  background: #ffffff;
+}
+
+/* =========================
+   Layout Wrapper
+========================= */
+.login-page {
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+.login-wrapper {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* =========================
+   Left Illustration Panel
+========================= */
+.login-left {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  background: #ffffff;
+}
+
+.login-left img {
+  max-width: 420px;
+  width: 100%;
+  height: auto;
+}
+
+/* =========================
+   Right Form Panel
+========================= */
+.login-right {
+  flex: 1;
+  background: #0d73e8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-top-left-radius: 40px;
+  border-bottom-left-radius: 40px;
+  position: relative;
+  padding: 40px 20px;
+  overflow: hidden;
+}
+
+/* Decorative Curves */
+.login-right::after {
+  content: "";
+  position: absolute;
+  bottom: -80px;
+  right: -80px;
+  width: 320px;
+  height: 320px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-radius: 50%;
+}
+
+.login-right::before {
+  content: "";
+  position: absolute;
+  bottom: -120px;
+  right: -120px;
+  width: 400px;
+  height: 400px;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+}
+
+/* =========================
+   Login Card
+========================= */
+.login-card {
+  background: #ffffff;
+  width: 100%;
+  max-width: 380px;
+  border-radius: 16px;
+  padding: 28px 26px 30px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.12);
+  z-index: 2;
+}
+
+.login-title {
+  font-size: 26px;
+  font-weight: 700;
+  color: #1f2933;
+  margin-bottom: 6px;
+}
+
+.login-subtitle {
+  font-size: 15px;
+  color: #6b7280;
+  margin-bottom: 22px;
+}
+
+/* =========================
+   Input Group
+========================= */
+.input-group {
+  position: relative;
+  margin-bottom: 16px;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 12px 14px 12px 42px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 999px;
+  font-size: 14px;
+  color: #1f2933;
+  background: #ffffff;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input-group input::placeholder {
+  color: #9ca3af;
+}
+
+.input-group input:focus {
+  outline: none;
+  border-color: #0d73e8;
+  box-shadow: 0 0 0 3px rgba(13, 115, 232, 0.15);
+}
+
+/* Input Icons */
+.input-group .icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+  color: #9ca3af;
+  pointer-events: none;
+}
+
+/* =========================
+   Login Button
+========================= */
+.login-button {
+  width: 100%;
+  margin-top: 10px;
+  padding: 12px;
+  background: #0d73e8;
+  border: none;
+  border-radius: 999px;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+
+.login-button:hover:not(:disabled) {
+  background: #0b63c7;
+  box-shadow: 0 6px 16px rgba(13, 115, 232, 0.35);
+}
+
+.login-button:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* =========================
+   Forgot Password
+========================= */
+.forgot-password {
+  margin-top: 14px;
+  font-size: 13px;
+  color: #6b7280;
+  text-align: left;
+}
+
+.forgot-password a {
+  color: #0d73e8;
+  text-decoration: none;
+}
+
+.forgot-password a:hover {
+  text-decoration: underline;
+}
+
+/* =========================
+   Responsive
+========================= */
+@media (max-width: 900px) {
+  .login-wrapper {
+    flex-direction: column;
+  }
+
+  .login-left {
+    display: none;
+  }
+
+  .login-right {
+    border-radius: 0;
+  }
+}

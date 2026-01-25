@@ -1,6 +1,7 @@
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000';
 
 const API_ENDPOINTS = {
+  LOGIN: `${API_BASE_URL}/api/user/login`,
   FORMS: `${API_BASE_URL}/api/forms`,
 };
 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import { postRequest } from '../services/apiService';
 import { toast } from 'react-toastify';
 import { API_ENDPOINTS } from '../config';
 
@@ -22,7 +22,7 @@ const FormFiller = ({ form, onClose }) => {
       const apiFormData = new FormData();
       apiFormData.append('values', JSON.stringify(formData));
       
-      const response = await axios.post(`${API_ENDPOINTS.FORMS}/${form.id}/fill`, apiFormData, {
+      const response = await postRequest(`${API_ENDPOINTS.FORMS}/${form.id}/fill`, apiFormData, {
         responseType: 'blob'
       });
 
@@ -56,16 +56,20 @@ const FormFiller = ({ form, onClose }) => {
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        <h2>Fill Form: {form.fields.title}</h2>
-        <form onSubmit={handleSubmit}>
+      <div className="modal-content filler-modal" onClick={(e) => e.stopPropagation()}>
+        <div className="filler-topbar">
+          <button className="filler-close" onClick={onClose} aria-label="Close">✕</button>
+        </div>
+        <div className="filler-subtitle">{form.fields.title}</div>
+
+        <form className="filler-body" onSubmit={handleSubmit}>
           {sections.map((section, sectionIndex) => (
-            <div key={sectionIndex} className="section-card">
-              <h3>{section.name}</h3>
-              {section.fields.map((field, fieldIndex) => (
-                <div key={fieldIndex} className="form-group">
-                  <label>{field.name}</label>
-                  <div style={{ position: 'relative', minHeight: '54px' }}>
+            <div key={sectionIndex} className="filler-section">
+              <h3 className="filler-section-title">{section.name}</h3>
+              <div className="filler-grid">
+                {section.fields.map((field, fieldIndex) => (
+                  <div key={fieldIndex} className="filler-field">
+                    <label>{field.name}</label>
                     <input
                       type={field.datatype === 'date' ? 'date' : 'text'}
                       value={formData[field.key] || ''}
@@ -73,20 +77,15 @@ const FormFiller = ({ form, onClose }) => {
                       required
                       style={fieldErrors[field.key] ? { borderColor: '#ef4444' } : {}}
                     />
-                    <div style={{
-                      color: '#ef4444',
-                      fontSize: '12px',
-                      marginTop: '4px',
-                      height: '16px'
-                    }}>
+                    <div className="filler-error">
                       {fieldErrors[field.key] && fieldErrors[field.key]}
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           ))}
-          <div className="actions">
+          <div className="filler-actions">
             <button type="button" className="secondary" onClick={onClose}>Cancel</button>
             <button type="submit" className="primary">Submit</button>
           </div>
