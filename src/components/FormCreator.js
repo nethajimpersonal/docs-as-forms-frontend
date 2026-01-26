@@ -106,7 +106,9 @@ const FormCreator = () => {
         <div className="topbar-right">
           <button className="new-invoice-btn" onClick={() => navigate('/list')}>Form List</button>
           <button className="logout-topbar-btn" onClick={handleLogout}>Logout</button>
-          <div className="avatar" />
+          <div className="avatar">
+            <img src="/profile.png" alt="Profile" />
+          </div>
         </div>
       </div>
 
