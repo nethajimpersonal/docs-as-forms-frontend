@@ -213,3 +213,64 @@ body {
     border-radius: 0;
   }
 }
+
+@media (max-width: 640px) {
+  .login-right {
+    padding: 24px 16px;
+  }
+
+  .login-card {
+    max-width: 420px;
+    margin: 12px auto 24px;
+    border-radius: 14px;
+    padding: 22px 20px 24px;
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.14);
+  }
+
+  .login-title {
+    font-size: 22px;
+  }
+
+  .login-subtitle {
+    font-size: 14px;
+    margin-bottom: 18px;
+  }
+
+  .input-group input {
+    padding: 12px 12px 12px 38px;
+    font-size: 13px;
+  }
+
+  .login-button {
+    font-size: 14px;
+    padding: 12px;
+  }
+
+  .forgot-password {
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-right {
+    padding: 18px 12px;
+  }
+
+  .login-card {
+    padding: 18px 16px 20px;
+    border-radius: 12px;
+  }
+
+  .input-group input {
+    padding: 11px 11px 11px 36px;
+  }
+
+  .input-group .icon {
+    left: 14px;
+    font-size: 15px;
+  }
+
+  .login-button {
+    padding: 11px;
+  }
+}

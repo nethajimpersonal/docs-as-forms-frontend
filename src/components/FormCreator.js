@@ -13,6 +13,14 @@ const FormCreator = () => {
   const [fieldErrors, setFieldErrors] = useState({});
   const navigate = useNavigate();
   const { logout } = useAuth();
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+
+  const handleLogout = () => setShowLogoutConfirm(true);
+  const cancelLogout = () => setShowLogoutConfirm(false);
+  const confirmLogout = () => {
+    setShowLogoutConfirm(false);
+    logout();
+  };
 
   const addSection = () => {
     setSections([...sections, { name: '', fields: [] }]);
@@ -100,7 +108,7 @@ const FormCreator = () => {
         </div>
         <div className="topbar-right">
           <button className="new-invoice-btn" onClick={() => navigate('/list')}>Form List</button>
-          <button className="logout-topbar-btn" onClick={logout}>Logout</button>
+          <button className="logout-topbar-btn" onClick={handleLogout}>Logout</button>
           <div className="avatar" />
         </div>
       </div>
@@ -227,6 +235,18 @@ const FormCreator = () => {
           </aside>
         </div>
       </div>
+      {showLogoutConfirm && (
+        <div className="modal-overlay" onClick={cancelLogout}>
+          <div className="modal-content confirm-modal" onClick={(e) => e.stopPropagation()}>
+            <h3>Logout?</h3>
+            <p>You will be signed out of Docs as Forms.</p>
+            <div className="confirm-actions">
+              <button className="secondary" type="button" onClick={cancelLogout}>Cancel</button>
+              <button className="danger" type="button" onClick={confirmLogout}>Logout</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -13,6 +13,14 @@ const FormList = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
   const { logout } = useAuth();
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+
+  const handleLogout = () => setShowLogoutConfirm(true);
+  const cancelLogout = () => setShowLogoutConfirm(false);
+  const confirmLogout = () => {
+    setShowLogoutConfirm(false);
+    logout();
+  };
 
   useEffect(() => {
     const fetchForms = async () => {
@@ -81,7 +89,7 @@ const FormList = () => {
         </div>
         <div className="topbar-right">
           <button className="new-invoice-btn" onClick={() => navigate('/create')}>New Form</button>
-          <button className="logout-topbar-btn" onClick={logout}>Logout</button>
+          <button className="logout-topbar-btn" onClick={handleLogout}>Logout</button>
           <div className="avatar" />
         </div>
       </div>
@@ -193,6 +201,18 @@ const FormList = () => {
             <div className="delete-actions">
               <button className="secondary" onClick={closeDeleteModal}>Cancel</button>
               <button className="danger" onClick={handleDeleteConfirm}>Delete</button>
+            </div>
+          </div>
+        </div>
+      )}
+      {showLogoutConfirm && (
+        <div className="modal-overlay" onClick={cancelLogout}>
+          <div className="modal-content confirm-modal" onClick={(e) => e.stopPropagation()}>
+            <h3>Logout?</h3>
+            <p>You will be signed out of Docs to Forms.</p>
+            <div className="confirm-actions">
+              <button className="secondary" type="button" onClick={cancelLogout}>Cancel</button>
+              <button className="danger" type="button" onClick={confirmLogout}>Logout</button>
             </div>
           </div>
         </div>
