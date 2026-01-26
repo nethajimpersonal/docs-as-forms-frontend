@@ -1,8 +1,8 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { AuthProvider, useAuth } from './context/AuthContext';
+import { AuthProvider } from './context/AuthContext';
 import FormCreator from './components/FormCreator';
 import FormList from './components/FormList';
 import Login from './components/Login';
@@ -11,7 +11,6 @@ import './App.css';
 
 function AppContent() {
   const location = useLocation();
-  const { isAuthenticated, logout } = useAuth();
   const isLoginPage = location.pathname === '/login';
 
   return (

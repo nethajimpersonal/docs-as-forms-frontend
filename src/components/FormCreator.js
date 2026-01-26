@@ -102,9 +102,6 @@ const FormCreator = () => {
       <div className="topbar">
         <div className="topbar-left">
           <div className="logo">D2F</div>
-          <div className="nav-links">
-            <span className="active">Create</span>
-          </div>
         </div>
         <div className="topbar-right">
           <button className="new-invoice-btn" onClick={() => navigate('/list')}>Form List</button>
