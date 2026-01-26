@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getRequest, deleteRequest } from '../services/apiService';
 import { toast } from 'react-toastify';
-import { API_ENDPOINTS, API_BASE_URL } from '../config';
+import { API_ENDPOINTS } from '../config';
 import FormFiller from './FormFiller';
 import { useAuth } from '../context/AuthContext';
 
@@ -34,9 +34,9 @@ const FormList = () => {
     fetchForms();
   }, []);
 
-  const handleDownload = async (templatePath, title) => {
+  const handleDownload = async (templateId, title) => {
     try {
-      const response = await getRequest(templatePath, { responseType: 'blob' });
+      const response = await getRequest(`${API_ENDPOINTS.DOWNLOAD_TEMPLATE}/${templateId}`, { responseType: 'blob' });
       const blob = new Blob([response.data]);
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
@@ -138,7 +138,6 @@ const FormList = () => {
           filteredForms.map((form) => {
             const title = form.fields.title;
             const description = form.fields.description;
-            const templatePath = `/api/${form.template_path}`;
             const sections = JSON.parse(form.fields.sections || '[]');
             const fieldCount = sections.reduce((count, section) => count + (section.fields?.length || 0), 0);
             return (
@@ -159,7 +158,7 @@ const FormList = () => {
                   <div className="amount-label">Fields</div>
                 </div>
 
-                <button className="pdf-btn" onClick={() => handleDownload(templatePath, title)}>
+                <button className="pdf-btn" onClick={() => handleDownload(form.template_id, title)}>
                   Download template
                 </button>
 
