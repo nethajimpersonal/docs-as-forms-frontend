@@ -34,15 +34,22 @@ const FormList = () => {
     fetchForms();
   }, []);
 
-  const handleView = (fileUrl) => {
-    window.open(fileUrl, '_blank');
-  };
-
-  const handleDownload = (fileUrl, title) => {
-    const link = document.createElement('a');
-    link.href = fileUrl;
-    link.download = `${title}.doc`;
-    link.click();
+  const handleDownload = async (templatePath, title) => {
+    try {
+      const response = await getRequest(templatePath, { responseType: 'blob' });
+      const blob = new Blob([response.data]);
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `${title}.doc`);
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      toast.success('Template download started!');
+    } catch (error) {
+      toast.error('Failed to download template.');
+    }
   };
 
   const generateRandomCode = () => {
@@ -131,7 +138,7 @@ const FormList = () => {
           filteredForms.map((form) => {
             const title = form.fields.title;
             const description = form.fields.description;
-            const fileUrl = `${API_BASE_URL}/api/${form.template_path}`;
+            const templatePath = `/api/${form.template_path}`;
             const sections = JSON.parse(form.fields.sections || '[]');
             const fieldCount = sections.reduce((count, section) => count + (section.fields?.length || 0), 0);
             return (
@@ -152,7 +159,7 @@ const FormList = () => {
                   <div className="amount-label">Fields</div>
                 </div>
 
-                <button className="pdf-btn" onClick={() => handleDownload(fileUrl, title)}>
+                <button className="pdf-btn" onClick={() => handleDownload(templatePath, title)}>
                   Download template
                 </button>
 
@@ -209,7 +216,7 @@ const FormList = () => {
         <div className="modal-overlay" onClick={cancelLogout}>
           <div className="modal-content confirm-modal" onClick={(e) => e.stopPropagation()}>
             <h3>Logout?</h3>
-            <p>You will be signed out of Docs to Forms.</p>
+            <p>You will be signed out of Docs as Forms.</p>
             <div className="confirm-actions">
               <button className="secondary" type="button" onClick={cancelLogout}>Cancel</button>
               <button className="danger" type="button" onClick={confirmLogout}>Logout</button>
