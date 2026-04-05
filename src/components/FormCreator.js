@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { postRequest } from '../services/apiService';
+import { postRequest, getRequest } from '../services/apiService';
 import { toast } from 'react-toastify';
 import { API_ENDPOINTS } from '../config';
 import { useAuth } from '../context/AuthContext';
@@ -11,9 +11,22 @@ const FormCreator = () => {
   const [sections, setSections] = useState([]);
   const [file, setFile] = useState(null);
   const [fieldErrors, setFieldErrors] = useState({});
+  const [fontFamilies, setFontFamilies] = useState([]);
+  const [fontFamily, setFontFamily] = useState('');
+  const [fontSize, setFontSize] = useState();
   const navigate = useNavigate();
   const { logout } = useAuth();
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+
+  useEffect(() => {
+    getRequest(API_ENDPOINTS.FONT_FAMILIES)
+      .then((res) => {
+        setFontFamilies(res.data.font_families || []);
+      })
+      .catch(() => {
+        toast.error('Failed to load font families.');
+      });
+  }, []);
 
   const handleLogout = () => setShowLogoutConfirm(true);
   const cancelLogout = () => setShowLogoutConfirm(false);
@@ -68,6 +81,10 @@ const FormCreator = () => {
     const fields = {
       title,
       description,
+      style: {
+        font_family: fontFamily,
+        font_size: fontSize
+      },
       sections: JSON.stringify(sections)
     }
     const formData = new FormData();
@@ -139,6 +156,25 @@ const FormCreator = () => {
             <div className="form-group">
               <label>Upload DOC File</label>
               <input type="file" accept=".doc,.docx" onChange={(e) => setFile(e.target.files[0])} required />
+            </div>
+            <div className="font-options-group">
+              <div className="form-group">
+                <label>Font Family</label>
+                <select value={fontFamily} onChange={(e) => setFontFamily(e.target.value)}>
+                  <option value="">Select font family</option>
+                  {fontFamilies.map((f) => (
+                    <option key={f} value={f}>{f}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="form-group">
+                <label>Font Size</label>
+                <select value={fontSize} onChange={(e) => setFontSize(Number(e.target.value))}>
+                  {[8, 9, 10, 11, 12, 14, 16, 18, 20, 24, 28, 32, 36, 48, 72].map((s) => (
+                    <option key={s} value={s}>{s}</option>
+                  ))}
+                </select>
+              </div>
             </div>
           </div>
 

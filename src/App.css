@@ -381,6 +381,21 @@
 	min-height: 90px;
 }
 
+.form-creator-page .font-options-group {
+	grid-column: span 2;
+	display: flex;
+	gap: 12px;
+	align-items: flex-end;
+}
+
+.form-creator-page .font-options-group .form-group:first-child {
+	width: 220px;
+}
+
+.form-creator-page .font-options-group .form-group:last-child {
+	width: 100px;
+}
+
 .form-creator-page .creator-section-title {
 	margin: 18px 0 12px;
 	font-size: 16px;
