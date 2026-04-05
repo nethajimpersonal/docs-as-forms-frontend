@@ -7,6 +7,8 @@ const FormFiller = ({ form, onClose }) => {
   const [formData, setFormData] = useState({});
   const [fieldErrors, setFieldErrors] = useState({});
   const sections = JSON.parse(form.fields.sections);
+  const fontFamily = form.fields?.style?.font_family || 'Default';
+  const fontSize = form.fields?.style?.font_size ? `${form.fields.style.font_size} pt` : 'Default';
 
   const handleInputChange = (key, value) => {
     setFormData({ ...formData, [key]: value });
@@ -60,7 +62,19 @@ const FormFiller = ({ form, onClose }) => {
         <div className="filler-topbar">
           <button className="filler-close" onClick={onClose} aria-label="Close">✕</button>
         </div>
-        <div className="filler-subtitle">{form.fields.title}</div>
+        <div className="filler-heading-row">
+          <div className="filler-subtitle">{form.fields.title}</div>
+          <div className="filler-style-meta">
+            <div className="filler-meta-box">
+              <span>Font Family</span>
+              <strong>{fontFamily}</strong>
+            </div>
+            <div className="filler-meta-box">
+              <span>Font Size</span>
+              <strong>{fontSize}</strong>
+            </div>
+          </div>
+        </div>
 
         <form className="filler-body" onSubmit={handleSubmit}>
           {sections.map((section, sectionIndex) => (

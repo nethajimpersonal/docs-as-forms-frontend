@@ -3,8 +3,8 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-route
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { AuthProvider } from './context/AuthContext';
-import FormCreator from './components/FormCreator';
-import FormList from './components/FormList';
+import CreatePage from './pages/CreatePage';
+import ListPage from './pages/ListPage';
 import Login from './components/Login';
 import ProtectedRoute from './components/ProtectedRoute';
 import './App.css';
@@ -19,7 +19,7 @@ function AppContent() {
       {isLoginPage ? (
         <Routes>
           <Route path="/login" element={<Login />} />
-          <Route path="/" element={<ProtectedRoute><FormList /></ProtectedRoute>} />
+          <Route path="/" element={<ProtectedRoute><ListPage /></ProtectedRoute>} />
         </Routes>
       ) : (
         <div className="app-layout">
@@ -30,7 +30,7 @@ function AppContent() {
                   path="/create"
                   element={
                     <ProtectedRoute>
-                      <FormCreator />
+                      <CreatePage />
                     </ProtectedRoute>
                   }
                 />
@@ -38,11 +38,11 @@ function AppContent() {
                   path="/list"
                   element={
                     <ProtectedRoute>
-                      <FormList />
+                      <ListPage />
                     </ProtectedRoute>
                   }
                 />
-                <Route path="/" element={<ProtectedRoute><FormList /></ProtectedRoute>} />
+                <Route path="/" element={<ProtectedRoute><ListPage /></ProtectedRoute>} />
               </Routes>
             </div>
           </main>

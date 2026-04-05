@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { postRequest, getRequest } from '../services/apiService';
 import { toast } from 'react-toastify';
 import { API_ENDPOINTS } from '../config';
-import { useAuth } from '../context/AuthContext';
 
 const FormCreator = () => {
   const [title, setTitle] = useState('');
@@ -14,9 +12,6 @@ const FormCreator = () => {
   const [fontFamilies, setFontFamilies] = useState([]);
   const [fontFamily, setFontFamily] = useState('');
   const [fontSize, setFontSize] = useState();
-  const navigate = useNavigate();
-  const { logout } = useAuth();
-  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
   useEffect(() => {
     getRequest(API_ENDPOINTS.FONT_FAMILIES)
@@ -27,13 +22,6 @@ const FormCreator = () => {
         toast.error('Failed to load font families.');
       });
   }, []);
-
-  const handleLogout = () => setShowLogoutConfirm(true);
-  const cancelLogout = () => setShowLogoutConfirm(false);
-  const confirmLogout = () => {
-    setShowLogoutConfirm(false);
-    logout();
-  };
 
   const addSection = () => {
     setSections([...sections, { name: '', fields: [] }]);
@@ -115,32 +103,7 @@ const FormCreator = () => {
   };
 
   return (
-    <div className="form-creator-page">
-      <div className="topbar">
-        <div className="topbar-left">
-          <div className="logo">D2F</div>
-        </div>
-        <div className="topbar-right">
-          <button className="new-invoice-btn" onClick={() => navigate('/list')}>Form List</button>
-          <button className="logout-topbar-btn" onClick={handleLogout}>Logout</button>
-          <div className="avatar">
-            <img src="/profile.png" alt="Profile" />
-          </div>
-        </div>
-      </div>
-
-      <div className="subnav">
-        <div className="subnav-tabs">
-          <span className="active">Details</span>
-          <span>Sections</span>
-          <span>Review</span>
-        </div>
-        <div className="subnav-actions">
-          <div className="pill">Builder</div>
-        </div>
-      </div>
-
-      <div className="content">
+    <div className="content">
         <div className="section-title">Create Form</div>
         <div className="creator-layout">
           <form className="creator-card" onSubmit={handleSubmit}>
@@ -170,7 +133,7 @@ const FormCreator = () => {
               <div className="form-group">
                 <label>Font Size</label>
                 <select value={fontSize} onChange={(e) => setFontSize(Number(e.target.value))}>
-                  {[8, 9, 10, 11, 12, 14, 16, 18, 20, 24, 28, 32, 36, 48, 72].map((s) => (
+                  {Array.from({ length: 43 }, (_, i) => i + 8).map((s) => (
                     <option key={s} value={s}>{s}</option>
                   ))}
                 </select>
@@ -270,19 +233,6 @@ const FormCreator = () => {
           </aside>
         </div>
       </div>
-      {showLogoutConfirm && (
-        <div className="modal-overlay" onClick={cancelLogout}>
-          <div className="modal-content confirm-modal" onClick={(e) => e.stopPropagation()}>
-            <h3>Logout?</h3>
-            <p>You will be signed out of Docs as Forms.</p>
-            <div className="confirm-actions">
-              <button className="secondary" type="button" onClick={cancelLogout}>Cancel</button>
-              <button className="danger" type="button" onClick={confirmLogout}>Logout</button>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
   );
 }
 

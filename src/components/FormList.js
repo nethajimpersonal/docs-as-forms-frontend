@@ -1,26 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { getRequest, deleteRequest } from '../services/apiService';
 import { toast } from 'react-toastify';
 import { API_ENDPOINTS } from '../config';
 import FormFiller from './FormFiller';
-import { useAuth } from '../context/AuthContext';
 
-const FormList = () => {
+const FormList = ({ searchTerm = '', onFormsCountChange, onFormsLoaded, onViewRecents }) => {
   const [selectedForm, setSelectedForm] = useState(null);
   const [forms, setForms] = useState([]);
   const [deleteModal, setDeleteModal] = useState({ isOpen: false, formId: null, code: null, userInput: '' });
-  const [searchTerm, setSearchTerm] = useState('');
-  const navigate = useNavigate();
-  const { logout } = useAuth();
-  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
-
-  const handleLogout = () => setShowLogoutConfirm(true);
-  const cancelLogout = () => setShowLogoutConfirm(false);
-  const confirmLogout = () => {
-    setShowLogoutConfirm(false);
-    logout();
-  };
 
   useEffect(() => {
     const fetchForms = async () => {
@@ -33,6 +20,15 @@ const FormList = () => {
     };
     fetchForms();
   }, []);
+
+  useEffect(() => {
+    if (typeof onFormsCountChange === 'function') {
+      onFormsCountChange(forms.length);
+    }
+    if (typeof onFormsLoaded === 'function') {
+      onFormsLoaded(forms);
+    }
+  }, [forms, onFormsCountChange, onFormsLoaded]);
 
   const handleDownload = async (templateId, title) => {
     try {
@@ -86,40 +82,7 @@ const FormList = () => {
   });
 
   return (
-    <div className="form-list-page">
-      <div className="topbar">
-        <div className="topbar-left">
-          <div className="logo">D2F</div>
-        </div>
-        <div className="topbar-right">
-          <button className="new-invoice-btn" onClick={() => navigate('/create')}>New Form</button>
-          <button className="logout-topbar-btn" onClick={handleLogout}>Logout</button>
-          <div className="avatar">
-            <img src="/profile.png" alt="Profile" />
-          </div>
-        </div>
-      </div>
-
-      <div className="subnav">
-        <div className="subnav-tabs">
-          <span className="active">All Forms</span>
-          <span>Recent</span>
-          <span>Archived</span>
-        </div>
-        <div className="subnav-actions">
-          <div className="pill">{forms.length} Total</div>
-          <div className="search-box">
-            🔍
-            <input
-              type="text"
-              placeholder="Search by title"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
-        </div>
-      </div>
-
+    <>
       <div className="content">
         <div className="section-title">Form Templates</div>
 
@@ -162,6 +125,13 @@ const FormList = () => {
                 </button>
 
                 <div className="row-actions">
+                  <button
+                    className="icon-btn recents-icon-btn"
+                    title="View Recents"
+                    onClick={() => onViewRecents && onViewRecents(form.id)}
+                  >
+                      ⟳
+                  </button>
                   <button className="fix-btn" onClick={() => setSelectedForm(form)}>Fill Form</button>
                   <button className="icon-btn danger" title="Delete" onClick={() => handleDeleteClick(form.id)}>🗑️</button>
                 </div>
@@ -210,19 +180,7 @@ const FormList = () => {
           </div>
         </div>
       )}
-      {showLogoutConfirm && (
-        <div className="modal-overlay" onClick={cancelLogout}>
-          <div className="modal-content confirm-modal" onClick={(e) => e.stopPropagation()}>
-            <h3>Logout?</h3>
-            <p>You will be signed out of Docs as Forms.</p>
-            <div className="confirm-actions">
-              <button className="secondary" type="button" onClick={cancelLogout}>Cancel</button>
-              <button className="danger" type="button" onClick={confirmLogout}>Logout</button>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
+    </>
   );
 };
 
