@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
-const Topbar = ({ actionLabel, actionPath }) => {
+const Topbar = ({ actionLabel, actionPath, isDarkMode, onToggleDarkMode }) => {
   const navigate = useNavigate();
   const { logout } = useAuth();
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
@@ -21,6 +21,14 @@ const Topbar = ({ actionLabel, actionPath }) => {
           <div className="logo">D2F</div>
         </div>
         <div className="topbar-right">
+          <button
+            className={`darkmode-toggle-btn ${isDarkMode ? 'is-dark' : ''}`}
+            onClick={onToggleDarkMode}
+            aria-label="Toggle theme"
+          >
+            <span className="toggle-icon" aria-hidden="true">{isDarkMode ? '🌙' : '☀️'}</span>
+            <span className="toggle-label">{isDarkMode ? 'Dark' : 'Light'}</span>
+          </button>
           <button className="new-invoice-btn" onClick={() => navigate(actionPath)}>{actionLabel}</button>
           <button className="logout-topbar-btn" onClick={handleLogout}>Logout</button>
           <div className="avatar">

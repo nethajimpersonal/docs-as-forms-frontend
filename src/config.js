@@ -5,7 +5,8 @@ const API_ENDPOINTS = {
   FORMS: `${API_BASE_URL}/api/forms`,
   DOWNLOAD_TEMPLATE: `${API_BASE_URL}/api/templates`,
   FONT_FAMILIES: `${API_BASE_URL}/api/fonts/families`,
-  GENERATED_FILES: `${API_BASE_URL}/api/generated`
+  SUBMITTED: `${API_BASE_URL}/api/submitted`,
+  SAVED: `${API_BASE_URL}/api/saved`
 };
 
 export { API_BASE_URL, API_ENDPOINTS };

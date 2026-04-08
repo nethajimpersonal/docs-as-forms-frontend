@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { getRequest } from '../services/apiService';
+import { getRequest, deleteRequest } from '../services/apiService';
 import { toast } from 'react-toastify';
 import { API_ENDPOINTS } from '../config';
-import SaveAsModal from './SaveAsModal';
+import ConfirmDeleteByNameModal from './ConfirmDeleteByNameModal';
 
-const FormSubmissions = ({ formId, forms = [], onFormChange }) => {
+const FormSaved = ({ formId, forms = [], onFormChange }) => {
   const [loading, setLoading] = useState(true);
   const [files, setFiles] = useState([]);
   const [viewingValues, setViewingValues] = useState(null);
-  const [savingFile, setSavingFile] = useState(null);
-  const [referenceText, setReferenceText] = useState('');
-  const [isSaving, setIsSaving] = useState(false);
+  const [deletingFile, setDeletingFile] = useState(null);
+  const [deleteNameInput, setDeleteNameInput] = useState('');
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [searchText, setSearchText] = useState('');
   const [selectedFormId, setSelectedFormId] = useState(formId || forms[0]?.id || '');
 
   useEffect(() => {
@@ -32,18 +33,20 @@ const FormSubmissions = ({ formId, forms = [], onFormChange }) => {
     }
 
     setLoading(true);
-    getRequest(`${API_ENDPOINTS.FORMS}/${selectedFormId}/form-submissions`)
+    getRequest(`${API_ENDPOINTS.SAVED}/${selectedFormId}`, {
+      params: { search_text: searchText.trim() }
+    })
       .then((res) => {
-        const sorted = [...(res.data.form_submissions || [])].sort(
+        const sorted = [...(res.data.saved_submissions || res.data.files || [])].sort(
           (a, b) => new Date(b.created_at) - new Date(a.created_at)
         );
         setFiles(sorted);
       })
       .catch(() => {
-        toast.error('Failed to load form submissions.');
+        toast.error('Failed to load saved files.');
       })
       .finally(() => setLoading(false));
-  }, [selectedFormId]);
+  }, [selectedFormId, searchText]);
 
   const handleFormChange = (e) => {
     const nextFormId = e.target.value;
@@ -53,49 +56,14 @@ const FormSubmissions = ({ formId, forms = [], onFormChange }) => {
     }
   };
 
-  const openSaveModal = (file) => {
-    setSavingFile(file);
-    setReferenceText(file.filename || '');
-  };
-
-  const closeSaveModal = () => {
-    if (isSaving) {
-      return;
-    }
-    setSavingFile(null);
-    setReferenceText('');
-  };
-
-  const handleSaveConfirm = async () => {
-    if (!savingFile) {
-      return;
-    }
-
-    const trimmedReferenceText = referenceText.trim();
-    if (!trimmedReferenceText) {
-      toast.error('Save as name is required.');
-      return;
-    }
-
-    try {
-      setIsSaving(true);
-      await getRequest(`${API_ENDPOINTS.SUBMITTED}/${selectedFormId}/${savingFile.submission_id}/save`, {
-        params: { reference_text: trimmedReferenceText }
-      });
-      toast.success('Details saved successfully!');
-      closeSaveModal();
-    } catch {
-      toast.error('Failed to save details.');
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
-  const handleDownload = async (file) => {
+  const handleRegenerate = async (file) => {
     try {
       const response = await getRequest(
-        `${API_ENDPOINTS.SUBMITTED}/${file.file_id}`,
-        { responseType: 'blob' }
+        `${API_ENDPOINTS.SAVED}/${file.submission_id}/re-generate`,
+        {
+          responseType: 'blob',
+          params: { form_id: selectedFormId }
+        }
       );
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
@@ -111,6 +79,43 @@ const FormSubmissions = ({ formId, forms = [], onFormChange }) => {
     }
   };
 
+  const openDeleteModal = (file) => {
+    setDeletingFile(file);
+    setDeleteNameInput('');
+  };
+
+  const closeDeleteModal = () => {
+    if (isDeleting) {
+      return;
+    }
+    setDeletingFile(null);
+    setDeleteNameInput('');
+  };
+
+  const handleDelete = async () => {
+    if (!deletingFile) {
+      return;
+    }
+
+    const expectedName = deletingFile.reference_text || deletingFile.filename || '';
+    if (deleteNameInput.trim() !== expectedName) {
+      toast.error('Please type the exact name to confirm deletion.');
+      return;
+    }
+
+    try {
+      setIsDeleting(true);
+      await deleteRequest(`${API_ENDPOINTS.SAVED}/${selectedFormId}/${deletingFile.submission_id}`);
+      setFiles((prevFiles) => prevFiles.filter((item) => item.submission_id !== deletingFile.submission_id));
+      toast.success('Saved submission deleted successfully!');
+      closeDeleteModal();
+    } catch {
+      toast.error('Failed to delete saved submission.');
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   const formatDate = (isoStr) => {
     const d = new Date(isoStr);
     return d.toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' });
@@ -119,17 +124,26 @@ const FormSubmissions = ({ formId, forms = [], onFormChange }) => {
   return (
     <>
       <div className="content">
-        <div className="section-title">Submissions</div>
+        <div className="section-title">Saved</div>
 
-        <div className="recents-filter-row">
+        <div className="recents-filter-row saved-filter-row">
           <div className="recents-filter-group">
-            <select id="recents-form-select" className="recents-form-select" value={selectedFormId} onChange={handleFormChange}>
+            <select id="saved-form-select" className="recents-form-select" value={selectedFormId} onChange={handleFormChange}>
               {forms.map((form) => (
                 <option key={form.id} value={form.id}>
                   {form.fields?.title || 'Untitled Form'}
                 </option>
               ))}
             </select>
+          </div>
+          <div className="search-box">
+            🔍
+            <input
+              type="text"
+              placeholder="Search submissions"
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+            />
           </div>
         </div>
 
@@ -138,25 +152,25 @@ const FormSubmissions = ({ formId, forms = [], onFormChange }) => {
         ) : loading ? (
           <div className="recents-empty">Loading...</div>
         ) : files.length === 0 ? (
-          <div className="recents-empty">No submissions for this form yet.</div>
+          <div className="recents-empty">No saved documents for this form yet.</div>
         ) : (
           <div className="list-scroll-area">
             <div className="recents-header-row">
               <div className="slno-cell">Sl No</div>
-              <div>File</div>
-              <div>Submitted At</div>
+              <div>Name</div>
+              <div>Saved At</div>
               <div>Fields Used</div>
               <div>Actions</div>
             </div>
 
             {files.map((file, index) => (
-              <div key={file.file_id} className="recents-row">
+              <div key={file.submission_id} className="recents-row">
                 <div className="slno-cell">{index + 1}</div>
-                <div className="recents-filename" title={file.filename}>
-                  {file.filename}
+                <div className="recents-filename" title={file.reference_text}>
+                  {file.reference_text}
                 </div>
 
-                <div className="recents-date">{formatDate(file.created_at)}</div>
+                <div className="recents-date">{formatDate(file.saved_at)}</div>
 
                 <div className="recents-count-cell">
                   <div className="amount">{Object.keys(file.values_used || {}).length}</div>
@@ -172,14 +186,14 @@ const FormSubmissions = ({ formId, forms = [], onFormChange }) => {
                     👁️
                   </button>
                   <button
-                    className="icon-btn recents-save-btn"
-                    title="Save details"
-                    onClick={() => openSaveModal(file)}
+                    className="icon-btn danger"
+                    title="Delete saved submission"
+                    onClick={() => openDeleteModal(file)}
                   >
-                    💾
+                    🗑️
                   </button>
-                  <button className="fix-btn" onClick={() => handleDownload(file)}>
-                    Download
+                  <button className="fix-btn" onClick={() => handleRegenerate(file)}>
+                    Re-generate
                   </button>
                 </div>
               </div>
@@ -220,18 +234,18 @@ const FormSubmissions = ({ formId, forms = [], onFormChange }) => {
         </div>
       )}
 
-      {savingFile && (
-        <SaveAsModal
-          fileName={savingFile.filename}
-          referenceText={referenceText}
-          onReferenceTextChange={setReferenceText}
-          onClose={closeSaveModal}
-          onConfirm={handleSaveConfirm}
-          isSaving={isSaving}
+      {deletingFile && (
+        <ConfirmDeleteByNameModal
+          name={deletingFile.reference_text || deletingFile.filename || 'Untitled'}
+          inputValue={deleteNameInput}
+          onInputChange={setDeleteNameInput}
+          onClose={closeDeleteModal}
+          onConfirm={handleDelete}
+          isDeleting={isDeleting}
         />
       )}
     </>
   );
 };
 
-export default FormSubmissions;
+export default FormSaved;

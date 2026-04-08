@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -12,6 +12,16 @@ import './App.css';
 function AppContent() {
   const location = useLocation();
   const isLoginPage = location.pathname === '/login';
+  const [isDarkMode, setIsDarkMode] = useState(() => localStorage.getItem('theme') === 'dark');
+
+  useEffect(() => {
+    document.body.classList.toggle('dark-mode', isDarkMode);
+    localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+  }, [isDarkMode]);
+
+  const handleToggleDarkMode = () => {
+    setIsDarkMode((prev) => !prev);
+  };
 
   return (
     <>
@@ -30,7 +40,7 @@ function AppContent() {
                   path="/create"
                   element={
                     <ProtectedRoute>
-                      <CreatePage />
+                      <CreatePage isDarkMode={isDarkMode} onToggleDarkMode={handleToggleDarkMode} />
                     </ProtectedRoute>
                   }
                 />
@@ -38,11 +48,11 @@ function AppContent() {
                   path="/list"
                   element={
                     <ProtectedRoute>
-                      <ListPage />
+                      <ListPage isDarkMode={isDarkMode} onToggleDarkMode={handleToggleDarkMode} />
                     </ProtectedRoute>
                   }
                 />
-                <Route path="/" element={<ProtectedRoute><ListPage /></ProtectedRoute>} />
+                <Route path="/" element={<ProtectedRoute><ListPage isDarkMode={isDarkMode} onToggleDarkMode={handleToggleDarkMode} /></ProtectedRoute>} />
               </Routes>
             </div>
           </main>

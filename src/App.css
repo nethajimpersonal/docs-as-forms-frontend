@@ -92,6 +92,58 @@
 	cursor: pointer;
 }
 
+.form-list-page .darkmode-toggle-btn,
+.form-creator-page .darkmode-toggle-btn {
+	background: linear-gradient(135deg, rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0.1));
+	color: #ffffff;
+	border: 1px solid rgba(255, 255, 255, 0.45);
+	border-radius: 999px;
+	padding: 6px 12px 6px 8px;
+	font-size: 13px;
+	font-weight: 600;
+	cursor: pointer;
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	min-width: 96px;
+	justify-content: center;
+	box-shadow: 0 6px 14px rgba(15, 23, 42, 0.18);
+	transition: transform 0.15s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-list-page .darkmode-toggle-btn:hover,
+.form-creator-page .darkmode-toggle-btn:hover {
+	background: linear-gradient(135deg, rgba(255, 255, 255, 0.34), rgba(255, 255, 255, 0.16));
+	transform: translateY(-1px);
+	box-shadow: 0 8px 16px rgba(15, 23, 42, 0.24);
+}
+
+.form-list-page .darkmode-toggle-btn .toggle-icon,
+.form-creator-page .darkmode-toggle-btn .toggle-icon {
+	width: 22px;
+	height: 22px;
+	border-radius: 999px;
+	background: rgba(255, 255, 255, 0.85);
+	color: #1f2937;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 12px;
+	line-height: 1;
+}
+
+.form-list-page .darkmode-toggle-btn.is-dark,
+.form-creator-page .darkmode-toggle-btn.is-dark {
+	background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.85));
+	border-color: rgba(148, 163, 184, 0.55);
+}
+
+.form-list-page .darkmode-toggle-btn.is-dark .toggle-icon,
+.form-creator-page .darkmode-toggle-btn.is-dark .toggle-icon {
+	background: rgba(148, 163, 184, 0.25);
+	color: #f8fafc;
+}
+
 .form-list-page .logout-topbar-btn,
 .form-creator-page .logout-topbar-btn {
 	background: rgba(255, 255, 255, 0.2);
@@ -214,22 +266,34 @@
 /* Main Content */
 .form-list-page .content,
 .form-creator-page .content {
-	max-width: 1150px;
+	max-width: 1320px;
 	margin: 0 auto;
-	padding: 24px;
+	padding: 14px 24px 24px;
 }
 
 .form-list-page .section-title,
 .form-creator-page .section-title {
 	font-size: 16px;
 	font-weight: 600;
-	margin: 24px 0 12px;
+	margin: 14px 0 12px;
 	color: #374151;
+}
+
+.form-list-page .list-title-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	margin: 14px 0 12px;
+}
+
+.form-list-page .list-title-row .section-title {
+	margin: 0;
 }
 
 .form-list-page .list-header-row {
 	display: grid;
-	grid-template-columns: minmax(160px, 1fr) minmax(200px, 2fr) 120px 150px 220px;
+	grid-template-columns: 56px minmax(160px, 0.9fr) minmax(220px, 1.6fr) minmax(320px, 1.4fr);
 	column-gap: 20px;
 	align-items: center;
 	padding: 10px 24px 12px;
@@ -244,7 +308,46 @@
 }
 
 .form-list-page .list-header-row > div:last-child {
-	text-align: right;
+	text-align: center;
+}
+
+.form-list-page .slno-cell {
+	text-align: center;
+	font-size: 12px;
+	font-weight: 600;
+	color: #6b7280;
+}
+
+.form-list-page .list-scroll-area {
+	max-height: 62vh;
+	overflow-y: auto;
+	padding-right: 4px;
+	scrollbar-width: thin;
+	scrollbar-color: #cbd5e1 transparent;
+}
+
+.form-list-page .list-scroll-area::-webkit-scrollbar,
+.modal-content::-webkit-scrollbar {
+	width: 8px;
+	height: 8px;
+}
+
+.form-list-page .list-scroll-area::-webkit-scrollbar-thumb,
+.modal-content::-webkit-scrollbar-thumb {
+	background: #cbd5e1;
+	border-radius: 999px;
+}
+
+.form-list-page .list-scroll-area::-webkit-scrollbar-track,
+.modal-content::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+.form-list-page .list-scroll-area .list-header-row,
+.form-list-page .list-scroll-area .recents-header-row {
+	position: sticky;
+	top: 0;
+	z-index: 5;
 }
 
 /* Form Creator specific styling */
@@ -502,16 +605,17 @@
 /* Invoice Card Row (Form Row) */
 .form-list-page .invoice-row {
 	background: #ffffff;
+	border: 1px solid transparent;
 	border-radius: 14px;
 	padding: 20px 24px;
 	display: grid;
-	grid-template-columns: minmax(160px, 1fr) minmax(200px, 2fr) 120px 150px 220px;
+	grid-template-columns: 56px minmax(160px, 0.9fr) minmax(220px, 1.6fr) minmax(320px, 1.4fr);
 	align-items: start;
 	column-gap: 20px;
 	row-gap: 12px;
 	margin-bottom: 14px;
 	box-shadow: 0 4px 14px rgba(0,0,0,0.04);
-	transition: transform 0.2s, box-shadow 0.2s;
+	transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s, border-color 0.2s;
 }
 
 .form-list-page .invoice-row > div {
@@ -521,6 +625,8 @@
 
 .form-list-page .invoice-row:hover {
 	transform: translateY(-2px);
+	background: #f9fbff;
+	border-color: #bfdbfe;
 	box-shadow: 0 8px 22px rgba(0,0,0,0.08);
 }
 
@@ -836,20 +942,32 @@
 }
 
 .filler-topbar {
-	display: flex;
+	display: inline-flex;
 	align-items: center;
-	justify-content: space-between;
-	gap: 12px;
+	justify-content: center;
+	position: sticky;
+	top: 0;
+	z-index: 10;
+	margin-left: auto;
+	padding-bottom: 8px;
+	margin-bottom: 4px;
+	background: transparent;
 }
 
 
 .filler-close {
 	border: none;
-	background: #eef2f7;
+	background: #ef4444;
+	color: #ffffff;
 	width: 34px;
 	height: 34px;
 	border-radius: 50%;
 	cursor: pointer;
+	box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+}
+
+.filler-close:hover {
+	background: #dc2626;
 }
 
 .filler-subtitle {
@@ -973,6 +1091,20 @@
 .filler-actions .secondary {
 	background: #eef2f7;
 	color: #374151;
+}
+
+.filler-actions .add-another-btn {
+	background: #14b8a6;
+	color: #ffffff;
+}
+
+.filler-actions .add-another-btn:hover {
+	background: #0f9b8a;
+}
+
+.filler-actions .add-another-btn:disabled {
+	opacity: 0.7;
+	cursor: not-allowed;
 }
 
 @media (max-width: 900px) {
@@ -1149,6 +1281,27 @@
 	font-size: 14px;
 }
 
+.delete-name-box {
+	background: #fff7ed;
+	border: 1px solid #fed7aa;
+	border-radius: 12px;
+	padding: 12px;
+	margin: 14px 0;
+}
+
+.delete-name-label {
+	font-size: 12px;
+	color: #9ca3af;
+	margin-bottom: 6px;
+}
+
+.delete-name-value {
+	font-size: 14px;
+	font-weight: 600;
+	color: #9a3412;
+	word-break: break-word;
+}
+
 .delete-actions {
 	display: flex;
 	justify-content: flex-end;
@@ -1165,6 +1318,95 @@
 	font-weight: 600;
 	cursor: pointer;
 	transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+}
+
+.save-as-modal {
+	padding: 24px;
+	max-width: 520px;
+}
+
+.save-as-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	margin-bottom: 12px;
+}
+
+.save-as-header h2 {
+	margin: 0 0 4px;
+	font-size: 20px;
+	font-weight: 700;
+	color: #111827;
+}
+
+.save-as-header p {
+	margin: 0;
+	color: #6b7280;
+	font-size: 14px;
+}
+
+.save-as-file {
+	background: #f9fafb;
+	border: 1px solid #e5e7eb;
+	border-radius: 12px;
+	padding: 10px 12px;
+	font-size: 13px;
+	color: #4b5563;
+	margin: 14px 0;
+	word-break: break-word;
+}
+
+.save-as-input {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.save-as-input label {
+	font-size: 13px;
+	color: #6b7280;
+}
+
+.save-as-input input {
+	width: 100%;
+	padding: 12px 14px;
+	border-radius: 12px;
+	border: 1px solid #e5e7eb;
+	font-size: 14px;
+}
+
+.save-as-actions {
+	display: flex;
+	justify-content: flex-end;
+	gap: 12px;
+	margin-top: 16px;
+}
+
+.save-as-actions .secondary,
+.save-as-actions .primary {
+	border: none;
+	border-radius: 999px;
+	padding: 10px 16px;
+	font-size: 14px;
+	font-weight: 600;
+	cursor: pointer;
+	transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+}
+
+.save-as-actions .secondary {
+	background: #f3f4f6;
+	color: #374151;
+}
+
+.save-as-actions .primary {
+	background: var(--accent);
+	color: #ffffff;
+}
+
+.save-as-actions button:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
 }
 
 .delete-actions .secondary {
@@ -1203,7 +1445,7 @@
 /* FormRecents — header row */
 .form-list-page .recents-header-row {
 	display: grid;
-	grid-template-columns: minmax(220px, 2fr) 180px 120px 200px;
+	grid-template-columns: 56px minmax(220px, 2fr) 180px 120px 200px;
 	column-gap: 20px;
 	align-items: center;
 	padding: 10px 24px 12px;
@@ -1217,12 +1459,12 @@
 	margin-bottom: 12px;
 }
 
-.form-list-page .recents-header-row > div:nth-child(3) {
+.form-list-page .recents-header-row > div:nth-child(4) {
 	justify-self: center;
 	text-align: center;
 }
 
-.form-list-page .recents-header-row > div:nth-child(4) {
+.form-list-page .recents-header-row > div:nth-child(5) {
 	justify-self: end;
 	text-align: right;
 }
@@ -1230,19 +1472,22 @@
 /* FormRecents — file row */
 .form-list-page .recents-row {
 	background: #ffffff;
+	border: 1px solid transparent;
 	border-radius: 14px;
 	padding: 18px 24px;
 	display: grid;
-	grid-template-columns: minmax(220px, 2fr) 180px 120px 200px;
+	grid-template-columns: 56px minmax(220px, 2fr) 180px 120px 200px;
 	column-gap: 20px;
 	align-items: center;
 	margin-bottom: 12px;
 	box-shadow: 0 4px 14px rgba(0,0,0,0.04);
-	transition: transform 0.2s, box-shadow 0.2s;
+	transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s, border-color 0.2s;
 }
 
 .form-list-page .recents-row:hover {
 	transform: translateY(-2px);
+	background: #f9fbff;
+	border-color: #bfdbfe;
 	box-shadow: 0 8px 22px rgba(0,0,0,0.08);
 }
 
@@ -1281,6 +1526,115 @@
 	background: #dcfce7;
 }
 
+/* Dark mode */
+body.dark-mode .form-list-page,
+body.dark-mode .form-creator-page {
+	--accent: #3b82f6;
+	--text: #e5e7eb;
+	--muted: #9ca3af;
+	background: #0b1220;
+	color: #e5e7eb;
+}
+
+body.dark-mode .form-list-page .topbar,
+body.dark-mode .form-creator-page .topbar {
+	background: #111827;
+}
+
+body.dark-mode .form-list-page .subnav,
+body.dark-mode .form-creator-page .subnav,
+body.dark-mode .form-list-page .list-header-row,
+body.dark-mode .form-list-page .invoice-row,
+body.dark-mode .form-list-page .recents-header-row,
+body.dark-mode .form-list-page .recents-row,
+body.dark-mode .form-list-page .creator-card,
+body.dark-mode .form-creator-page .creator-card,
+body.dark-mode .form-list-page .preview-card,
+body.dark-mode .form-creator-page .preview-card,
+body.dark-mode .form-list-page .creator-section-card,
+body.dark-mode .form-creator-page .creator-section-card,
+body.dark-mode .modal-content {
+	background: #111827;
+	border-color: #1f2937;
+	color: #e5e7eb;
+}
+
+body.dark-mode .form-list-page .section-title,
+body.dark-mode .form-creator-page .section-title,
+body.dark-mode .form-list-page .invoice-date,
+body.dark-mode .form-list-page .client-name,
+body.dark-mode .form-list-page .amount,
+body.dark-mode .form-list-page .recents-filename,
+body.dark-mode .filler-subtitle,
+body.dark-mode .filler-section-title,
+body.dark-mode .save-as-header h2,
+body.dark-mode .delete-modal-header h2 {
+	color: #f3f4f6;
+}
+
+body.dark-mode .form-list-page .description-tooltip {
+	background: #0f172a;
+}
+
+body.dark-mode .form-list-page .search-box,
+body.dark-mode .form-creator-page .search-box,
+body.dark-mode .form-list-page .pill,
+body.dark-mode .form-creator-page .pill,
+body.dark-mode .form-list-page .icon-btn,
+body.dark-mode .form-creator-page .icon-btn,
+body.dark-mode .form-list-page .pdf-btn,
+body.dark-mode .form-list-page .recents-form-select,
+body.dark-mode .delete-input input,
+body.dark-mode .save-as-input input,
+body.dark-mode .filler-field input,
+body.dark-mode .delete-close {
+	background: #1f2937;
+	color: #e5e7eb;
+	border-color: #374151;
+}
+
+body.dark-mode .form-list-page .search-box input,
+body.dark-mode .form-creator-page .search-box input,
+body.dark-mode .filler-field label,
+body.dark-mode .delete-modal-header p,
+body.dark-mode .save-as-header p,
+body.dark-mode .recents-date,
+body.dark-mode .amount-label,
+body.dark-mode .recents-empty {
+	color: #9ca3af;
+}
+
+body.dark-mode .form-list-page .invoice-row:hover,
+body.dark-mode .form-list-page .recents-row:hover {
+	background: #172033;
+	border-color: #334155;
+}
+
+body.dark-mode .filler-section {
+	background: #0f172a;
+	border-color: #334155;
+}
+
+body.dark-mode .filler-meta-box {
+	background: #0f172a;
+	border-color: #334155;
+}
+
+body.dark-mode .filler-meta-box span,
+body.dark-mode .filler-field label {
+	color: #cbd5e1;
+}
+
+body.dark-mode .filler-meta-box strong,
+body.dark-mode .filler-section-title,
+body.dark-mode .filler-subtitle {
+	color: #f8fafc;
+}
+
+body.dark-mode .filler-error {
+	color: #fca5a5;
+}
+
 /* Empty / loading state */
 .form-list-page .recents-empty {
 	padding: 48px 24px;
@@ -1291,6 +1645,17 @@
 
 .form-list-page .recents-filter-row {
 	margin: 0 0 14px;
+}
+
+.form-list-page .saved-filter-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+}
+
+.form-list-page .saved-filter-row .search-box {
+	margin-left: auto;
 }
 
 .form-list-page .recents-filter-group {
@@ -1412,6 +1777,15 @@
 
 	.form-list-page .recents-filter-group {
 		max-width: 100%;
+	}
+
+	.form-list-page .saved-filter-row {
+		flex-direction: column;
+		align-items: stretch;
+	}
+
+	.form-list-page .saved-filter-row .search-box {
+		margin-left: 0;
 	}
 
 	.form-list-page .recents-form-select {

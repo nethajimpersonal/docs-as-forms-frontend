@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 import { API_ENDPOINTS } from '../config';
 import FormFiller from './FormFiller';
 
-const FormList = ({ searchTerm = '', onFormsCountChange, onFormsLoaded, onViewRecents }) => {
+const FormList = ({ searchTerm = '', onSearchTermChange, onFormsLoaded, onViewSubmissions, onViewSaved }) => {
   const [selectedForm, setSelectedForm] = useState(null);
   const [forms, setForms] = useState([]);
   const [deleteModal, setDeleteModal] = useState({ isOpen: false, formId: null, code: null, userInput: '' });
@@ -22,13 +22,10 @@ const FormList = ({ searchTerm = '', onFormsCountChange, onFormsLoaded, onViewRe
   }, []);
 
   useEffect(() => {
-    if (typeof onFormsCountChange === 'function') {
-      onFormsCountChange(forms.length);
-    }
     if (typeof onFormsLoaded === 'function') {
       onFormsLoaded(forms);
     }
-  }, [forms, onFormsCountChange, onFormsLoaded]);
+  }, [forms, onFormsLoaded]);
 
   const handleDownload = async (templateId, title) => {
     try {
@@ -84,62 +81,74 @@ const FormList = ({ searchTerm = '', onFormsCountChange, onFormsLoaded, onViewRe
   return (
     <>
       <div className="content">
-        <div className="section-title">Form Templates</div>
-
-        <div className="list-header-row">
-          <div>Title</div>
-          <div>Description</div>
-          <div>Fields</div>
-          <div>Template</div>
-          <div>Actions</div>
+        <div className="list-title-row">
+          <div className="section-title">Form Templates</div>
+          <div className="search-box">
+            🔍
+            <input
+              type="text"
+              placeholder="Search by title"
+              value={searchTerm}
+              onChange={(e) => onSearchTermChange && onSearchTermChange(e.target.value)}
+            />
+          </div>
         </div>
 
-        {filteredForms.length === 0 ? (
-          <p>No forms available.</p>
-        ) : (
-          filteredForms.map((form) => {
-            const title = form.fields.title;
-            const description = form.fields.description;
-            const sections = JSON.parse(form.fields.sections || '[]');
-            const fieldCount = sections.reduce((count, section) => count + (section.fields?.length || 0), 0);
-            return (
-              <div key={form.id} className="invoice-row">
-                <div>
-                  <div className="invoice-date">{title}</div>
-                </div>
+        <div className="list-scroll-area">
+          <div className="list-header-row">
+            <div className="slno-cell">Sl No</div>
+            <div>Title</div>
+            <div>Description</div>
+            <div>Actions</div>
+          </div>
 
-                <div className="description-cell">
-                  <div className="client-name description-clamp" title={description}>
-                    {description}
+          {filteredForms.length === 0 ? (
+            <p>No forms available.</p>
+          ) : (
+            filteredForms.map((form, index) => {
+              const title = form.fields.title;
+              const description = form.fields.description;
+              return (
+                <div key={form.id} className="invoice-row">
+                  <div className="slno-cell">{index + 1}</div>
+                  <div>
+                    <div className="invoice-date">{title}</div>
                   </div>
-                  <span className="description-tooltip">{description}</span>
+
+                  <div className="description-cell">
+                    <div className="client-name description-clamp" title={description}>
+                      {description}
+                    </div>
+                    <span className="description-tooltip">{description}</span>
+                  </div>
+
+                  <div className="row-actions">
+                    <button className="pdf-btn" onClick={() => handleDownload(form.template_id, title)}>
+                      ⬇️ Template
+                    </button>
+                    <button
+                      className="icon-btn recents-icon-btn"
+                      title="View Submissions"
+                      onClick={() => onViewSubmissions && onViewSubmissions(form.id)}
+                    >
+                        📑
+                    </button>
+                    <button
+                      className="icon-btn recents-save-btn"
+                      title="View Saved"
+                      onClick={() => onViewSaved && onViewSaved(form.id)}
+                    >
+                      🗂️
+                    </button>
+                    <button className="fix-btn" onClick={() => setSelectedForm(form)}>Fill Form</button>
+                    <button className="icon-btn danger" title="Delete" onClick={() => handleDeleteClick(form.id)}>🗑️</button>
+                  </div>
+
                 </div>
-
-                <div>
-                  <div className="amount">{fieldCount}</div>
-                  <div className="amount-label">Fields</div>
-                </div>
-
-                <button className="pdf-btn" onClick={() => handleDownload(form.template_id, title)}>
-                  Download template
-                </button>
-
-                <div className="row-actions">
-                  <button
-                    className="icon-btn recents-icon-btn"
-                    title="View Recents"
-                    onClick={() => onViewRecents && onViewRecents(form.id)}
-                  >
-                      ⟳
-                  </button>
-                  <button className="fix-btn" onClick={() => setSelectedForm(form)}>Fill Form</button>
-                  <button className="icon-btn danger" title="Delete" onClick={() => handleDeleteClick(form.id)}>🗑️</button>
-                </div>
-
-              </div>
-            );
-          })
-        )}
+              );
+            })
+          )}
+        </div>
       </div>
       {selectedForm && (
         <FormFiller

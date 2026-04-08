@@ -6,6 +6,7 @@ import { API_ENDPOINTS } from '../config';
 const FormFiller = ({ form, onClose }) => {
   const [formData, setFormData] = useState({});
   const [fieldErrors, setFieldErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const sections = JSON.parse(form.fields.sections);
   const fontFamily = form.fields?.style?.font_family || 'Default';
   const fontSize = form.fields?.style?.font_size ? `${form.fields.style.font_size} pt` : 'Default';
@@ -18,13 +19,17 @@ const FormFiller = ({ form, onClose }) => {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const submitForm = async (closeAfterSubmit) => {
+    if (isSubmitting) {
+      return;
+    }
+
     try {
+      setIsSubmitting(true);
       const apiFormData = new FormData();
       apiFormData.append('values', JSON.stringify(formData));
       
-      const response = await postRequest(`${API_ENDPOINTS.FORMS}/${form.id}/fill`, apiFormData, {
+      const response = await postRequest(`${API_ENDPOINTS.FORMS}/${form.id}/submit`, apiFormData, {
         responseType: 'blob'
       });
 
@@ -38,8 +43,14 @@ const FormFiller = ({ form, onClose }) => {
       link.parentNode.removeChild(link);
       window.URL.revokeObjectURL(url);
 
-      toast.success('Form submitted and will be downloaded!');
-      onClose();
+      if (closeAfterSubmit) {
+        toast.success('Form submitted and will be downloaded!');
+        onClose();
+      } else {
+        setFormData({});
+        setFieldErrors({});
+        toast.success('Form submitted! Enter another set of values.');
+      }
     } catch (error) {
       // Handle validation errors from backend
       if (error.response?.data?.detail?.keys_not_in_document) {
@@ -53,7 +64,18 @@ const FormFiller = ({ form, onClose }) => {
       } else {
         toast.error('Error submitting form.');
       }
+    } finally {
+      setIsSubmitting(false);
     }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    await submitForm(true);
+  };
+
+  const handleSubmitAndContinue = async () => {
+    await submitForm(false);
   };
 
   return (
@@ -101,7 +123,17 @@ const FormFiller = ({ form, onClose }) => {
           ))}
           <div className="filler-actions">
             <button type="button" className="secondary" onClick={onClose}>Cancel</button>
-            <button type="submit" className="primary">Submit</button>
+            <button
+              type="button"
+              className="secondary add-another-btn"
+              onClick={handleSubmitAndContinue}
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? 'Submitting...' : 'Submit & Add Another'}
+            </button>
+            <button type="submit" className="primary" disabled={isSubmitting}>
+              {isSubmitting ? 'Submitting...' : 'Submit'}
+            </button>
           </div>
         </form>
       </div>
