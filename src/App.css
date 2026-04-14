@@ -726,6 +726,13 @@
 	font-size: 13px;
 	font-weight: 600;
 	cursor: pointer;
+	transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+}
+
+.form-list-page .fix-btn:hover {
+	background: #0b63c7;
+	box-shadow: 0 8px 16px rgba(13, 115, 232, 0.22);
+	transform: translateY(-1px);
 }
 
 .form-list-page .icon-btn {
@@ -1524,6 +1531,15 @@
 
 .form-list-page .icon-btn.recents-view-btn:hover {
 	background: #dcfce7;
+}
+
+.form-list-page .icon-btn.recents-save-btn {
+	background: #fff7ed;
+	color: #c2410c;
+}
+
+.form-list-page .icon-btn.recents-save-btn:hover {
+	background: #ffedd5;
 }
 
 /* Dark mode */

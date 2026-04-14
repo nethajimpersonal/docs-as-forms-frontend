@@ -131,7 +131,7 @@ const FormList = ({ searchTerm = '', onSearchTermChange, onFormsLoaded, onViewSu
                       title="View Submissions"
                       onClick={() => onViewSubmissions && onViewSubmissions(form.id)}
                     >
-                        📑
+                      📑
                     </button>
                     <button
                       className="icon-btn recents-save-btn"
@@ -143,7 +143,6 @@ const FormList = ({ searchTerm = '', onSearchTermChange, onFormsLoaded, onViewSu
                     <button className="fix-btn" onClick={() => setSelectedForm(form)}>Fill Form</button>
                     <button className="icon-btn danger" title="Delete" onClick={() => handleDeleteClick(form.id)}>🗑️</button>
                   </div>
-
                 </div>
               );
             })

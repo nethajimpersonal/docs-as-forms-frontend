@@ -59,16 +59,17 @@ const FormSaved = ({ formId, forms = [], onFormChange }) => {
   const handleRegenerate = async (file) => {
     try {
       const response = await getRequest(
-        `${API_ENDPOINTS.SAVED}/${file.submission_id}/re-generate`,
+        `${API_ENDPOINTS.SAVED}/${file.saved_submission_id}/re-generate`,
         {
           responseType: 'blob',
           params: { form_id: selectedFormId }
         }
       );
+      console.log('Re-generate response:', response);
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', file.filename);
+      link.setAttribute('download', `${file.reference_text}.doc`);
       document.body.appendChild(link);
       link.click();
       link.parentNode.removeChild(link);
@@ -105,8 +106,8 @@ const FormSaved = ({ formId, forms = [], onFormChange }) => {
 
     try {
       setIsDeleting(true);
-      await deleteRequest(`${API_ENDPOINTS.SAVED}/${selectedFormId}/${deletingFile.submission_id}`);
-      setFiles((prevFiles) => prevFiles.filter((item) => item.submission_id !== deletingFile.submission_id));
+      await deleteRequest(`${API_ENDPOINTS.SAVED}/${selectedFormId}/${deletingFile.saved_submission_id}`);
+      setFiles((prevFiles) => prevFiles.filter((item) => item.saved_submission_id !== deletingFile.saved_submission_id));
       toast.success('Saved submission deleted successfully!');
       closeDeleteModal();
     } catch {
